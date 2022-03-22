@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension type="plugin" group="xmap" version="3.9" method="upgrade">
+<extension type="plugin" group="schuweb_sitemap" method="upgrade">
 	<name>PLG_SCHUWEB_SITEMAP_DPCALENDAR</name>
 	<author>Sven Schultschik</author>
 	<creationDate>sw.build.date</creationDate>
 	<copyright>Copyright (C) 2022 SchuWeb Extensions. All rights reserved.</copyright>
-	<license> </license>
+	<license>https://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3</license>
 	<authorEmail>extensions@schultschik.de</authorEmail>
 	<authorUrl>extensions.schultschik.de</authorUrl>
 	<version>sw.build.version</version>

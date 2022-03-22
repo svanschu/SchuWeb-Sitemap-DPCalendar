@@ -1,10 +1,11 @@
 <?php
 /**
- * @package SchuWeb Sitemap
+ * @package     SchuWeb Sitemap
  *
- * @copyright (C) 2022 Sven Schultschik. All rights reserved
- * @license http://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3
- * @link https://extensions.schultschik.de
+ * @version     sw.build.version
+ * @copyright   (C) 2022 Sven Schultschik. All rights reserved
+ * @license     https://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3
+ * @link        https://extensions.schultschik.de
  **/
 
 defined('_JEXEC') or die();
@@ -49,7 +50,7 @@ class schuweb_sitemap_dpcalendar
 		}
 	}
 
-	public static function getTree($xmap, $parent, &$params)
+	public static function getTree($sitemap, $parent, &$params)
 	{
 		$db = JFactory::getDBO();
 		$app = JFactory::getApplication();
@@ -70,8 +71,8 @@ class schuweb_sitemap_dpcalendar
 		 */
 		// ----- Set expand_calendars param
 		$expand_calendars = ArrayHelper::getValue($params, 'expand_calendars', 1);
-		$expand_calendars = ($expand_calendars == 1 || ($expand_calendars == 2 && $xmap->view == 'xml') ||
-				 ($expand_calendars == 3 && $xmap->view == 'html') || $xmap->view == 'navigator');
+		$expand_calendars = ($expand_calendars == 1 || ($expand_calendars == 2 && $sitemap->view == 'xml') ||
+				 ($expand_calendars == 3 && $sitemap->view == 'html') || $sitemap->view == 'navigator');
 		$params['expand_calendars'] = $expand_calendars;
 
 		// ----- Set calendar_priority and calendar_changefreq params
@@ -98,14 +99,14 @@ class schuweb_sitemap_dpcalendar
 		switch ($view) {
 			case 'calendar':
 				if ($params['expand_calendars']) {
-					$result = self::expandCalendar($xmap, $parent, ($id ? $id : 1), $params, $parent->id);
+					$result = self::expandCalendar($sitemap, $parent, ($id ? $id : 1), $params, $parent->id);
 				}
 				break;
 		}
 		return $result;
 	}
 
-	public static function expandCalendar($xmap, $parent, $caid, &$params, $itemid)
+	public static function expandCalendar($sitemap, $parent, $caid, &$params, $itemid)
 	{
 		jimport('joomla.application.categories');
 		$options = [];
@@ -120,7 +121,7 @@ class schuweb_sitemap_dpcalendar
 		}
 
 		if ($items && count($items) > 0) {
-			$xmap->changeLevel(1);
+			$sitemap->changeLevel(1);
 			for ($i = 0; $i < count($items); $i ++) {
 				$item = $items[$i];
 				$node = new stdclass();
@@ -132,9 +133,10 @@ class schuweb_sitemap_dpcalendar
 				$node->name = $item->title;
 				$node->expandible = true;
 				$node->secure = $parent->secure;
+                $node->lastmod    = $parent->lastmod;
 				$node->newsItem = 0;
 
-				if ($xmap->isNews || ! $item->modified_time) {
+				if ($sitemap->isNews || ! $item->modified_time) {
 					$item->modified = $item->created_time;
 				} else {
 					$item->modified = $item->modified_time;
@@ -148,25 +150,25 @@ class schuweb_sitemap_dpcalendar
 				} else {
 					$node->itemid = preg_replace('/.*Itemid=([0-9]+).*/', '$1', $node->link);
 				}
-				if ($xmap->printNode($node)) {
-					self::expandCalendar($xmap, $parent, $item->id, $params, $node->itemid);
+				if ($sitemap->printNode($node)) {
+					self::expandCalendar($sitemap, $parent, $item->id, $params, $node->itemid);
 				}
 			}
 
-			$xmap->changeLevel(- 1);
+			$sitemap->changeLevel(- 1);
 		}
 
 		// Include Calendar's content
-		self::includeCalendarContent($xmap, $parent, $caid, $params, $itemid);
+		self::includeCalendarContent($sitemap, $parent, $caid, $params, $itemid);
 		return true;
 	}
 
-	public static function includeCalendarContent($xmap, $parent, $caid, &$params, $Itemid)
+	public static function includeCalendarContent($sitemap, $parent, $caid, &$params, $Itemid)
 	{
 		$db = JFactory::getDBO();
 
 		// We do not do ordering for XML sitemap.
-		if ($xmap->view != 'xml') {
+		if ($sitemap->view != 'xml') {
 			$orderby = self::buildEventOrderBy($parent->params, $parent->id, $Itemid);
 		}
 		JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_dpcalendar/models', 'DPCalendarModel');
@@ -174,7 +176,7 @@ class schuweb_sitemap_dpcalendar
 		$model_cal->setState('category.id', $caid);
 		$items = $model_cal->getItems();
 		if (count($items) > 0) {
-			$xmap->changeLevel(1);
+			$sitemap->changeLevel(1);
 			foreach ($items as $item) {
 				$node = new stdclass();
 				$node->id = $parent->id;
@@ -188,8 +190,9 @@ class schuweb_sitemap_dpcalendar
 				$node->secure = $parent->secure;
 				$node->newsItem = 1;
 				$node->language = $item->language;
+                $node->lastmod  = $parent->lastmod;
 
-				if ($xmap->isNews || ! $node->modified) {
+				if ($sitemap->isNews || ! $node->modified) {
 					$node->modified = $item->created;
 				}
 
@@ -199,18 +202,18 @@ class schuweb_sitemap_dpcalendar
 
 				// $text = @$item->description;
 
-				if ($xmap->printNode($node) && $node->expandible) {
-					self::printNodes($xmap, $parent, $params, $subnodes);
+				if ($sitemap->printNode($node) && $node->expandible) {
+					self::printNodes($sitemap, $parent, $params, $subnodes);
 				}
 			}
-			$xmap->changeLevel(- 1);
+			$sitemap->changeLevel(- 1);
 		}
 		return true;
 	}
 
-	private static function printNodes($xmap, $parent, &$params, &$subnodes)
+	private static function printNodes($sitemap, $parent, &$params, &$subnodes)
 	{
-		$xmap->changeLevel(1);
+		$sitemap->changeLevel(1);
 		$i = 0;
 		foreach ($subnodes as $subnode) {
 			$i ++;
@@ -220,9 +223,10 @@ class schuweb_sitemap_dpcalendar
 			$subnode->priority = $params['event_priority'];
 			$subnode->changefreq = $params['event_changefreq'];
 			$subnode->secure = $parent->secure;
-			$xmap->printNode($subnode);
+            $subnode->lastmod = $parent->lastmod;
+			$sitemap->printNode($subnode);
 		}
-		$xmap->changeLevel(- 1);
+		$sitemap->changeLevel(- 1);
 	}
 
 	public static function buildEventOrderBy(&$params, $parentId, $itemid)
