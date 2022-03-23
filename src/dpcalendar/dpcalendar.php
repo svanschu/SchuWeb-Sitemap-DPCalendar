@@ -10,6 +10,9 @@
 
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Categories\CategoryServiceInterface;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
 use Joomla\Utilities\ArrayHelper;
 
 class schuweb_sitemap_dpcalendar
@@ -51,9 +54,9 @@ class schuweb_sitemap_dpcalendar
 
 	public static function getTree($sitemap, $parent, &$params)
 	{
-		$db = JFactory::getDBO();
-		$app = JFactory::getApplication();
-		$user = JFactory::getUser();
+		$db = Factory::getDBO();
+		$app = Factory::getApplication();
+		$user = $app->getIdentity();
 		$result = null;
 
 		$link_query = parse_url($parent->link);
@@ -89,7 +92,7 @@ class schuweb_sitemap_dpcalendar
 
 		$params['nullDate'] = $db->quote($db->getNullDate());
 
-		$params['nowDate'] = $db->quote(JFactory::getDate()->toSql());
+		$params['nowDate'] = $db->quote(Factory::getDate()->toSql());
 		$params['groups'] = implode(',', $user->getAuthorisedViewLevels());
 
 		// Define the language filter condition for the query
@@ -107,12 +110,17 @@ class schuweb_sitemap_dpcalendar
 
 	public static function expandCalendar($sitemap, $parent, $caid, &$params, $itemid)
 	{
-		jimport('joomla.application.categories');
 		$options = [];
 		$options['countItems'] = 20;
-		$categories = JCategories::getInstance('DPCalendar', $options);
-		$cc = ($caid == 1) ? 'root' : $caid;
-		$tparent = $categories->get($cc);
+        $app = Factory::getApplication();
+        $component = $app->bootComponent('DPCalendar');
+        if ($component instanceof CategoryServiceInterface)
+        {
+            $categories = $component->getCategory($options);
+        }
+        $cc = ($caid == 1) ? 'root' : $caid;
+        if (isset($categories))
+            $tparent = $categories->get($cc);
 		if (is_object($tparent)) {
 			$items = $tparent->getChildren(false);
 		} else {
@@ -142,7 +150,7 @@ class schuweb_sitemap_dpcalendar
 				}
 
 				$node->slug = $item->id;
-				$node->link = JRoute::_('index.php?option=com_dpcalendar&view=calendar&Itemid=' . $node->id);
+				$node->link = Route::_('index.php?option=com_dpcalendar&view=calendar&Itemid=' . $node->id);
 				if (strpos($node->link, 'Itemid=') === false) {
 					$node->itemid = $itemid;
 					$node->link .= '&Itemid=' . $itemid;
@@ -191,8 +199,7 @@ class schuweb_sitemap_dpcalendar
 
 				$node->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
 				$node->catslug = $item->catid;
-				$node->link = JRoute::_('index.php?option=com_dpcalendar&view=event&id=' . $item->id . '&Itemid=' . $node->id);
-
+				$node->link = Route::_('index.php?option=com_dpcalendar&view=event&id=' . $item->id . '&Itemid=' . $node->id);
 
 				if ($sitemap->printNode($node) && $node->expandible) {
 					self::printNodes($sitemap, $parent, $params, $subnodes);
