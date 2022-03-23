@@ -44,7 +44,6 @@ class schuweb_sitemap_dpcalendar
 				$row = $model_cal->getItem($eid);
 				if ($row != null) {
 					$node->modified = $row->modified;
-					$text = @$item->description;
 				}
 				break;
 		}
@@ -165,12 +164,6 @@ class schuweb_sitemap_dpcalendar
 
 	public static function includeCalendarContent($sitemap, $parent, $caid, &$params, $Itemid)
 	{
-		$db = JFactory::getDBO();
-
-		// We do not do ordering for XML sitemap.
-		if ($sitemap->view != 'xml') {
-			$orderby = self::buildEventOrderBy($parent->params, $parent->id, $Itemid);
-		}
 		JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_dpcalendar/models', 'DPCalendarModel');
 		$model_cal = JModelLegacy::getInstance('Events', 'DPCalendarModel');
 		$model_cal->setState('category.id', $caid);
@@ -200,7 +193,6 @@ class schuweb_sitemap_dpcalendar
 				$node->catslug = $item->catid;
 				$node->link = JRoute::_('index.php?option=com_dpcalendar&view=event&id=' . $item->id . '&Itemid=' . $node->id);
 
-				// $text = @$item->description;
 
 				if ($sitemap->printNode($node) && $node->expandible) {
 					self::printNodes($sitemap, $parent, $params, $subnodes);
@@ -227,40 +219,5 @@ class schuweb_sitemap_dpcalendar
 			$sitemap->printNode($subnode);
 		}
 		$sitemap->changeLevel(- 1);
-	}
-
-	public static function buildEventOrderBy(&$params, $parentId, $itemid)
-	{
-		$app = JFactory::getApplication('site');
-
-		// Case when the child gets a different menu itemid than it's parent
-		if ($parentId != $itemid) {
-			$menu = $app->getMenu();
-			$item = $menu->getItem($itemid);
-			$menuParams = clone ($params);
-			$itemParams = new JRegistry($item->params);
-			$menuParams->merge($itemParams);
-		} else {
-			$menuParams = & $params;
-		}
-
-		$filter_order = $app->getUserStateFromRequest('com_dpcalendar.calendar.list.' . $itemid . '.filter_order', 'filter_order', '', 'string');
-		$filter_order_Dir = $app->getUserStateFromRequest(
-			'com_dpcalendar.calendar.list.' . $itemid . '.filter_order_Dir',
-			'filter_order_Dir',
-			'',
-			'cmd'
-		);
-		$orderby = ' ';
-
-		if ($filter_order && $filter_order_Dir) {
-			$orderby .= $filter_order . ' ' . $filter_order_Dir . ', ';
-		}
-
-		$eventOrderby = $menuParams->get('orderby_sec', 'end_date');
-		$eventOrderDate = $menuParams->get('order_date');
-		$orderby .= ' a.created ';
-
-		return $orderby;
 	}
 }
