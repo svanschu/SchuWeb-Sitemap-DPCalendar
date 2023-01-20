@@ -16,6 +16,11 @@
 		<language tag="en-GB">en-GB/plg_schuweb_sitemap_dpcalendar.ini</language>
 		<language tag="en-GB">en-GB/plg_schuweb_sitemap_dpcalendar.sys.ini</language>
 	</languages>
+	<updateservers>
+        <server type="extension" priority="1" name="SchuWeb Sitemap - DPCalendar Integration">
+            https://raw.githubusercontent.com/svanschu/SchuWeb-Sitemap-DPCalendar/main/update.xml
+        </server>
+    </updateservers>
 	<scriptfile>script.php</scriptfile>
 	<config>
 		<fields name="params">
