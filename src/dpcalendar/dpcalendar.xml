@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="plugin" group="schuweb_sitemap" method="upgrade">
+	<name>PLG_SCHUWEB_SITEMAP_DPCALENDAR</name>
+	<author>Sven Schultschik</author>
+	<creationDate>sw.build.date</creationDate>
+	<copyright>Copyright (C) 2022 SchuWeb Extensions. All rights reserved.</copyright>
+	<license>https://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3</license>
+	<authorEmail>extensions@schultschik.de</authorEmail>
+	<authorUrl>extensions.schultschik.de</authorUrl>
+	<version>sw.build.version</version>
+	<description>PLG_SCHUWEB_SITEMAP_DPCALENDAR_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="dpcalendar">dpcalendar.php</filename>
+	</files>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/plg_schuweb_sitemap_dpcalendar.ini</language>
+		<language tag="en-GB">en-GB/plg_schuweb_sitemap_dpcalendar.sys.ini</language>
+	</languages>
+	<scriptfile>script.php</scriptfile>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="expand_calendars" type="list" default="1" label="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_EXPAND_CALENDARS"
+				       description="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_EXPAND_CALENDARS_DESC">
+					<option value="0">SCHUWEB_SITEMAP_OPTION_NEVER</option>
+					<option value="1">SCHUWEB_SITEMAP_OPTION_ALWAYS</option>
+					<option value="2">SCHUWEB_SITEMAP_OPTION_XML_ONLY</option>
+					<option value="3">SCHUWEB_SITEMAP_OPTION_HTML_ONLY</option>
+				</field>
+			</fieldset>
+			<fieldset name="xml">
+				<field name="calendar_priority" type="list" default="-1" label="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_CALENDAR_PRIORITY"
+				       description="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_CALENDAR_PRIORITY_DESC">
+					<option value="-1">SCHUWEB_SITEMAP_OPTION_USE_PARENT_MENU</option>
+					<option value="0.0">0.0</option>
+					<option value="0.1">0.1</option>
+					<option value="0.2">0.2</option>
+					<option value="0.3">0.3</option>
+					<option value="0.4">0.4</option>
+					<option value="0.5">0.5</option>
+					<option value="0.6">0.6</option>
+					<option value="0.7">0.7</option>
+					<option value="0.8">0.8</option>
+					<option value="0.9">0.9</option>
+					<option value="1">1</option>
+				</field>
+				<field name="calendar_changefreq" type="list" default="-1" label="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_CALENDAR_CHANCE_FREQ"
+				       description="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_CALENDAR_CHANCE_FREQ_DESC">
+					<option value="-1">SCHUWEB_SITEMAP_OPTION_USE_PARENT_MENU</option>
+					<option value="always">SCHUWEB_SITEMAP_OPTION_ALWAYS</option>
+					<option value="hourly">SCHUWEB_SITEMAP_OPTION_HOURLY</option>
+					<option value="daily">SCHUWEB_SITEMAP_OPTION_DAILY</option>
+					<option value="weekly">SCHUWEB_SITEMAP_OPTION_WEEKLY</option>
+					<option value="monthly">SCHUWEB_SITEMAP_OPTION_MONTHLY</option>
+					<option value="yearly">SCHUWEB_SITEMAP_OPTION_YEARLY</option>
+					<option value="never">SCHUWEB_SITEMAP_OPTION_NEVER</option>
+				</field>
+
+				<field name="event_priority" type="list" default="-1" label="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_EVENT_PRIORITY"
+				       description="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_EVENT_PRIORITY_DESC">
+					<option value="-1">SCHUWEB_SITEMAP_OPTION_USE_PARENT_MENU</option>
+					<option value="0.0">0.0</option>
+					<option value="0.1">0.1</option>
+					<option value="0.2">0.2</option>
+					<option value="0.3">0.3</option>
+					<option value="0.4">0.4</option>
+					<option value="0.5">0.5</option>
+					<option value="0.6">0.6</option>
+					<option value="0.7">0.7</option>
+					<option value="0.8">0.8</option>
+					<option value="0.9">0.9</option>
+					<option value="1">1</option>
+				</field>
+				<field name="event_changefreq" type="list" default="-1" label="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_EVENT_CHANCE_FREQ"
+				       description="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_EVENT_CHANCE_FREQ_DESC">
+					<option value="-1">SCHUWEB_SITEMAP_OPTION_USE_PARENT_MENU</option>
+					<option value="always">SCHUWEB_SITEMAP_OPTION_ALWAYS</option>
+					<option value="hourly">SCHUWEB_SITEMAP_OPTION_HOURLY</option>
+					<option value="daily">SCHUWEB_SITEMAP_OPTION_DAILY</option>
+					<option value="weekly">SCHUWEB_SITEMAP_OPTION_WEEKLY</option>
+					<option value="monthly">SCHUWEB_SITEMAP_OPTION_MONTHLY</option>
+					<option value="yearly">SCHUWEB_SITEMAP_OPTION_YEARLY</option>
+					<option value="never">SCHUWEB_SITEMAP_OPTION_NEVER</option>
+				</field>
+			</fieldset>
+			<fieldset name="news">
+				<field name="keywords" type="list" default="1" label="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_NEWS_KEYWORDS_LABEL"
+				       description="PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_NEWS_KEYWORDS_DESC">
+					<option value="metakey">PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_NEWS_KEYWORDS_METAKEYS</option>
+					<option value="calendar">PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_NEWS_KEYWORDS_CALENDARTITLE</option>
+					<option value="both">PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_NEWS_KEYWORDS_METAKEYS_CALENDARTITLE</option>
+					<option value="none">PLG_SCHUWEB_SITEMAP_DPCALENDAR_SETTING_NEWS_KEYWORDS_NONE</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>
