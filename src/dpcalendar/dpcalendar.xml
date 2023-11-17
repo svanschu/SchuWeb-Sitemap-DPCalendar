@@ -3,7 +3,7 @@
 	<name>PLG_SCHUWEB_SITEMAP_DPCALENDAR</name>
 	<author>Sven Schultschik</author>
 	<creationDate>sw.build.date</creationDate>
-	<copyright>Copyright (C) 2022 SchuWeb Extensions. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2022 - 2023 SchuWeb Extensions. All rights reserved.</copyright>
 	<license>https://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3</license>
 	<authorEmail>extensions@schultschik.de</authorEmail>
 	<authorUrl>extensions.schultschik.de</authorUrl>
@@ -11,6 +11,7 @@
 	<description>PLG_SCHUWEB_SITEMAP_DPCALENDAR_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="dpcalendar">dpcalendar.php</filename>
+		<folder>language</folder>
 	</files>
 	<languages folder="language">
 		<language tag="en-GB">en-GB/plg_schuweb_sitemap_dpcalendar.ini</language>

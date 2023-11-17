@@ -4,7 +4,7 @@
  *
  * @version             sw.build.version
  * @author              Sven Schultschik
- * @copyright (C)       2022 Sven Schultschik. All rights reserved
+ * @copyright (C)       2022 - 2023 Sven Schultschik. All rights reserved
  * @license             http://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3
  * @link                https://extensions.schultschik.de
  **/
@@ -30,7 +30,7 @@ class Plgschuweb_sitemapdpcalendarInstallerScript extends InstallerScript
     {
         // Define the minumum versions to be supported.
         $this->minimumJoomla = '4.0';
-        $this->minimumPhp = '7.4';
+        $this->minimumPhp = '8';
     }
 
     /**
