@@ -8,7 +8,7 @@
         <version>4.0.0</version>
         <infourl title="SchuWeb Sitemap - DPCalendar Plugin 4.0.0">https://extensions.schultschik.com/products/schuweb-sitemap/schuweb-sitemap-4-0-0</infourl>
         <downloads>
-            <downloadurl type="full" format="zip">https://github.com/svanschu/SchuWeb-Sitemap-DPCalendar/releases/download/v4.0.0/plg_dpcalendar_4.0.0_20230103.zip </downloadurl>
+            <downloadurl type="full" format="zip">https://github.com/svanschu/SchuWeb-Sitemap-DPCalendar/releases/download/4.0.0/plg_dpcalendar_4.0.0_20230103.zip </downloadurl>
         </downloads>
         <tags>
             <tag>stable</tag>
