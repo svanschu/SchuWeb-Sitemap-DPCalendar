@@ -4,7 +4,6 @@
     - Version number -Dbuild.version=0.0.0
 -->
 <project name="schuweb_sitemap_plugin" default="build">
-    <property name="extension_name" value="SchuWeb_Sitemap_DPCalendar"/>
     <!-- Version number of build -->
     <property name="build.version" value="0.0.0" override="true"/>
     <!-- get the date for build -->
@@ -12,32 +11,21 @@
         <format property="DATE" pattern="%d. %B %Y" locale="en_GB"/>
     </tstamp>
     <!-- Set the directory where the packages should be saved. Relative to the build dir -->
-    <property name="builddir" value="./../packages/${extension_name}" override="true"/>
+    <property name="builddir" value="./../packages/SchuWeb_Sitemap" override="true"/>
     <!-- Declare Project src files -->
     <property name="src" value="./src" override="true"/>
 
-    <target name="build" depends="prepare, copy">
-        <zip destfile="${builddir}/plg_dpcalendar_${build.version}_${build.date.DSTAMP}.zip">
-            <fileset dir="${builddir}/tmp/schuweb_sitemap_dpcalendar/">
-                <include name="**"/>
-            </fileset>
-        </zip>
-        <delete dir="${builddir}/tmp"/>
-        <echo msg="Zip ALL OK!"/>
-    </target>
-
-    <target name="prepare">
-        <mkdir dir="${builddir}/tmp/schuweb_sitemap_dpcalendar/"/>
+    <target name="build">
+        <mkdir dir="${builddir}/tmp/schuweb_sitemap/plugins/"/>
         <echo msg="Create temp folder OK!"/>
-    </target>
 
-    <target name="copy">
-        <copy todir="${builddir}/tmp/schuweb_sitemap_dpcalendar/">
-            <fileset dir="${src}/dpcalendar">
-                <include name="**"/>
+        <copy todir="${builddir}/tmp/schuweb_sitemap/plugins/">
+            <fileset dir="src">
+                <include name="dpcalendar/**"/>
             </fileset>
         </copy>
         <echo msg="Copy was successfull"/>
+
         <!-- insert version, build number and date into files -->
         <reflexive>
             <fileset dir="${builddir}/tmp/">
@@ -51,5 +39,13 @@
                 </replaceregexp>
             </filterchain>
         </reflexive>
+
+        <zip destfile="${builddir}/plg_dpcalendar_${build.version}_${build.date.DSTAMP}.zip">
+            <fileset dir="${builddir}/tmp/schuweb_sitemap/plugins/dpcalendar">
+                <include name="**"/>
+            </fileset>
+        </zip>
+        <delete dir="${builddir}/tmp"/>
+        <echo msg="Zip ALL OK!"/>
     </target>
 </project>
