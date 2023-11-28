@@ -172,12 +172,12 @@ class schuweb_sitemap_dpcalendar
                 $node->lastmod = $parent->lastmod;
                 $node->newsItem = 0;
 
-                if ($sitemap->isNewssitemap() || !$item->modified_time) {
-                    $item->modified = $item->created_time;
-                } else {
-                    $item->modified = $item->modified_time;
-                }
+                $item->modified = $item->modified_time;
 
+                if ($sitemap->isNewssitemap()) {
+                    $item->modified = $item->created_time;
+                } 
+                
                 $node->slug = $item->id;
                 $node->link = Route::_(
                     'index.php?option=com_dpcalendar&view=calendar&Itemid=' . $node->id,
@@ -243,7 +243,7 @@ class schuweb_sitemap_dpcalendar
                 $node->language = $item->language;
                 $node->lastmod = $parent->lastmod;
 
-                if ($sitemap->isNewssitemap() || !$node->modified) {
+                if ($sitemap->isNewssitemap()) {
                     $node->modified = $item->created;
                 }
 
