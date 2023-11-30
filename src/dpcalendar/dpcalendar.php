@@ -63,6 +63,11 @@ class schuweb_sitemap_dpcalendar
 
     public static function getTree(&$sitemap, &$parent, &$params)
     {
+        // An image sitemap does not make sense, hence those are community postings
+        // don't waste time/resources
+        if ($sitemap->isImagesitemap())
+            return false;
+
         $db = Factory::getDBO();
         $app = Factory::getApplication();
         $user = $app->getIdentity();
