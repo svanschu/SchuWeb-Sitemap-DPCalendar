@@ -1,13 +1,11 @@
 <?php
 /**
- * @package             SchuWeb Sitemap
- *
- * @version             sw.build.version
- * @author              Sven Schultschik
- * @copyright (C)       2022 - 2023 Sven Schultschik. All rights reserved
- * @license             http://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3
- * @link                https://extensions.schultschik.de
- **/
+ * @version     sw.build.version
+ * @copyright   Copyright (C) 2019 - 2023 Sven Schultschik. All rights reserved
+ * @license     GPL-3.0-or-later
+ * @author      Sven Schultschik (extensions@schultschik.de)
+ * @link        extensions.schultschik.de
+ */
 
 defined('_JEXEC') or die;
 
