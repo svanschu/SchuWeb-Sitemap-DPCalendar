@@ -182,7 +182,7 @@ class schuweb_sitemap_dpcalendar
                 } 
                 
                 $node->slug = $item->id;
-                $node->link = Route::_(
+                $node->link = Route::link('site',
                     'index.php?option=com_dpcalendar&view=calendar&Itemid=' . $node->id,
                     true,
                     Route::TLS_IGNORE,
@@ -252,7 +252,7 @@ class schuweb_sitemap_dpcalendar
 
                 $node->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
                 $node->catslug = $item->catid;
-                $node->link = Route::_(
+                $node->link = Route::link('site',
                     'index.php?option=com_dpcalendar&view=event&id=' . $item->id . '&Itemid=' . $node->id,
                     true,
                     Route::TLS_IGNORE,
