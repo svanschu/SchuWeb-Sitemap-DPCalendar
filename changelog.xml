@@ -1,0 +1,20 @@
+<changelogs>
+    <changelog>
+        <element>schuweb_sitemap_dpcalendar</element>
+        <type>plugin</type>
+        <version>5.0.0</version>
+        <fix>
+        </fix>
+        <addition>
+            <item>Joomla 4 namespacing</item>
+        </addition>
+        <change>
+            <item>Complete refactoring of the code</item>
+        </change>
+        <remove>
+        </remove>
+        <note>
+            <item>Remove duplicates is deactivated for dpcalendar</item>
+        </note>
+    </changelog>
+</changelogs>

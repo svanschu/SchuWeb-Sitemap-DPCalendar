@@ -22,6 +22,7 @@
             https://raw.githubusercontent.com/svanschu/SchuWeb-Sitemap-DPCalendar/main/update.xml
         </server>
     </updateservers>
+    <changelogurl>https://raw.githubusercontent.com/svanschu/SchuWeb-Sitemap-DPCalendar/main/changelog.xml</changelogurl>
 	<scriptfile>script.php</scriptfile>
 	<config>
 		<fields name="params">
