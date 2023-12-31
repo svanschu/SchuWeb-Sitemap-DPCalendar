@@ -188,12 +188,6 @@ class schuweb_sitemap_dpcalendar
                     Route::TLS_IGNORE,
                     $sitemap->isXmlsitemap()
                 );
-                if (strpos($node->link, 'Itemid=') === false) {
-                    $node->itemid = $itemid;
-                    $node->link .= '&Itemid=' . $itemid;
-                } else {
-                    $node->itemid = preg_replace('/.*Itemid=([0-9]+).*/', '$1', $node->link);
-                }
 
                 if (!isset($parent->subnodes))
                     $parent->subnodes = new \stdClass();
@@ -205,7 +199,7 @@ class schuweb_sitemap_dpcalendar
                 // Include Calendar's content
                 self::includeCalendarContent($sitemap, $parent->subnodes->$id, $item->id, $params, $itemid);
 
-                self::expandCalendar($sitemap, $parent->subnodes->$id, $item->id, $params, $node->itemid);
+                self::expandCalendar($sitemap, $parent->subnodes->$id, $item->id, $params, $node->id);
             }
 
         }
