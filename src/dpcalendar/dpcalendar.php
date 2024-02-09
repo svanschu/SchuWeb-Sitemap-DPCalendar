@@ -166,13 +166,9 @@ class schuweb_sitemap_dpcalendar
                 $node->priority = $params['calendar_priority'];
                 $node->changefreq = $params['calendar_changefreq'];
 
-                $node->xmlInsertChangeFreq = $parent->xmlInsertChangeFreq;
-                $node->xmlInsertPriority = $parent->xmlInsertPriority;
-
                 $node->name = $item->title;
                 $node->expandible = true;
                 $node->secure = $parent->secure;
-                $node->lastmod = $parent->lastmod;
                 $node->newsItem = 0;
 
                 $item->modified = $item->modified_time;
@@ -229,16 +225,12 @@ class schuweb_sitemap_dpcalendar
                 $node->priority = $params['event_priority'];
                 $node->changefreq = $params['event_changefreq'];
 
-                $node->xmlInsertChangeFreq = $parent->xmlInsertChangeFreq;
-                $node->xmlInsertPriority = $parent->xmlInsertPriority;
-
                 $node->name = $item->title;
                 $node->modified = $item->modified;
                 $node->expandible = false;
                 $node->secure = $parent->secure;
                 $node->newsItem = 1;
                 $node->language = $item->language;
-                $node->lastmod = $parent->lastmod;
 
                 if ($sitemap->isNewssitemap()) {
                     $node->modified = $item->created;
@@ -277,11 +269,7 @@ class schuweb_sitemap_dpcalendar
             $subnode->priority = $params['event_priority'];
             $subnode->changefreq = $params['event_changefreq'];
 
-            $subnode->xmlInsertChangeFreq = $parent->xmlInsertChangeFreq;
-            $subnode->xmlInsertPriority = $parent->xmlInsertPriority;
-
             $subnode->secure = $parent->secure;
-            $subnode->lastmod = $parent->lastmod;
 
             if (!isset($parent->subnodes))
                 $parent->subnodes = new \stdClass();
