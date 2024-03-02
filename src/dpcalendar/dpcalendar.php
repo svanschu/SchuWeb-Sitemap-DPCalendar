@@ -14,6 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Router\Route;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\Registry\Registry;
 
 class schuweb_sitemap_dpcalendar
 {
@@ -71,6 +72,11 @@ class schuweb_sitemap_dpcalendar
         $user = $app->getIdentity();
         $result = null;
 
+        if (is_null($user))
+            $groups = [0 => 1];
+        else
+            $groups = $user->getAuthorisedViewLevels();
+
         $link_query = parse_url($parent->link);
         if (!isset($link_query['query'])) {
             return;
@@ -105,7 +111,7 @@ class schuweb_sitemap_dpcalendar
         $params['nullDate'] = $db->quote($db->getNullDate());
 
         $params['nowDate'] = $db->quote(Factory::getDate()->toSql());
-        $params['groups'] = implode(',', $user->getAuthorisedViewLevels());
+        $params['groups'] = implode(',', $groups);
 
         // Define the language filter condition for the query
         $params['language_filter'] = $sitemap->isLanguageFilter();
@@ -148,8 +154,27 @@ class schuweb_sitemap_dpcalendar
             $items = false;
         }
 
-        $menuitem = $app->getMenu('site')->getItem($itemid);
-        $calendar_ids = $menuitem->getParams()->get('ids');
+        $menuitemparams = null;
+        if ($app instanceof Joomla\CMS\Application\ConsoleApplication) {
+            $db    = Factory::getDBO();
+            $query = $db->getQuery(true);
+            $query->select($db->qn('params'))
+                ->from($db->qn('#__menu'))
+                ->where($db->qn('id') . '=' . $db->q($itemid));
+            $db->setQuery($query);
+            $menuparams = $db->loadResult();
+            if (is_null($menuparams))
+                throw new RuntimeException("Menuprams of DPCalendar menu item not found in database");
+            $menuitemparams = new Registry($menuparams);
+        } else {
+            $menuitem       = $app->getMenu('site')->getItem($itemid);
+            $menuitemparams = $menuitem->getParams();
+        }
+
+        if (is_null($menuitemparams))
+            throw new RuntimeException("Menuprams of DPCalendar menu item not found");
+
+        $calendar_ids = $menuitemparams->get('ids');
 
         if (!in_array("-1", $calendar_ids))
             foreach ($items as $k => $item) {
