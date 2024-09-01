@@ -7,7 +7,9 @@
  * @link        extensions.schultschik.de
  */
 
-defined('_JEXEC') or die();
+namespace SchuWeb\Plugin\SchuWeb_Sitemap\DPCalendar\Extension;
+
+\defined('_JEXEC') or die();
 
 use Joomla\CMS\Categories\CategoryServiceInterface;
 use Joomla\CMS\Factory;
@@ -15,59 +17,98 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Router\Route;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\Registry\Registry;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
+use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
+use SchuWeb\Component\Sitemap\Site\Event\MenuItemPrepareEvent;
+use SchuWeb\Component\Sitemap\Site\Event\TreePrepareEvent;
 
-class schuweb_sitemap_dpcalendar
+class DPCalendar extends CMSPlugin implements SubscriberInterface
 {
-
-    public static function prepareMenuItem(&$node, &$params)
+    /**
+     * @since __BUMP_VERSION__
+     */
+    public static function getSubscribedEvents(): array
     {
-        $link_query = parse_url($node->link);
+        return [
+            'onGetMenus' => 'onGetMenus',
+            'onGetTree'  => 'onGetTree',
+        ];
+    }
+
+        /**
+     * This function is called before a menu item is printed. We use it to set the
+     * proper uniqueid for the item
+     *
+     * @param   MenuItemPrepareEvent  Event object
+     *
+     * @return void
+     * @since  __BUMP_VERSION__
+     */
+    public function onGetMenus(MenuItemPrepareEvent $event)
+    {
+        $menu_item = $event->getMenuItem();
+
+        $link_query = parse_url($menu_item->link);
         if (!isset($link_query['query'])) {
             return;
         }
 
         parse_str(html_entity_decode($link_query['query']), $link_vars);
         $view = ArrayHelper::getValue($link_vars, 'view', '');
-        $id = ArrayHelper::getValue($link_vars, 'id', 0);
+        $id   = ArrayHelper::getValue($link_vars, 'id', 0);
         BaseDatabaseModel::addIncludePath(JPATH_SITE . '/components/com_dpcalendar/models', 'DPCalendarModel');
 
         switch ($view) {
             case 'calendar':
-                if ($id) {
-                    $node->uid = 'com_dpcalendar' . $id;
-                } else {
-                    $node->uid = 'com_dpcalendar';
-                }
-                $node->expandible = true;
+                $menu_item->uid = $id ? "com_dpcalendar{$id}" : "com_dpcalendar";
+                $menu_item->expandible = true;
                 break;
             case 'event':
-                if (!JLoader::import('components.com_dpcalendar.helpers.dpcalendar', JPATH_ADMINISTRATOR)) {
+                if (!\JLoader::import('components.com_dpcalendar.helpers.dpcalendar', JPATH_ADMINISTRATOR)) {
                     return;
                 }
-                $node->uid = 'com_dpcalendar' . $id;
-                $node->expandible = false;
+                $menu_item->uid = "com_dpcalendar{$id}";
+                $menu_item->expandible = false;
                 $model_cal = Factory::getApplication()->bootComponent('com_dpcalendar')
                     ->getMVCFactory()->createModel('Event', 'DPCalendarModel');
 
                 $eid = intval($id);
                 $row = $model_cal->getItem($eid);
                 if ($row != null) {
-                    $node->modified = $row->modified;
+                    $menu_item->modified = $row->modified;
                 }
                 break;
             case 'list':
-                $node->expandible = true;
+                $menu_item->expandible = true;
         }
     }
 
-    public static function getTree(&$sitemap, &$parent, &$params)
+        /**
+     * Expands a com_content menu item
+     *
+     * @param   TreePrepareEvent  Event object
+     *
+     * @return void
+     * @since  __BUMP_VERSION__
+     */
+    public function onGetTree(TreePrepareEvent $event)
     {
+        $sitemap = $event->getSitemap();
+        $parent  = $event->getNode();
+
+        if ($parent->option != "com_dpcalendar")
+            return null;
+
         // An image sitemap does not make sense, hence those are community postings
         // don't waste time/resources
         if ($sitemap->isImagesitemap())
-            return false;
+            return null;
 
-        $db = Factory::getDBO();
+        /** @var DatabaseDriver $db */
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+
         $app = Factory::getApplication();
         $user = $app->getIdentity();
         $result = null;
@@ -90,7 +131,7 @@ class schuweb_sitemap_dpcalendar
          * * Parameters Initialitation
          */
         // ----- Set expand_calendars param
-        $expand_calendars = ArrayHelper::getValue($params, 'expand_calendars', 1);
+        $expand_calendars = $this->params->get('expand_calendars', 1);
         $expand_calendars = ($expand_calendars == 1 || ($expand_calendars == 2 && $sitemap->isXmlsitemap()) ||
             ($expand_calendars == 3 && !$sitemap->isXmlsitemap()));
         $params['expand_calendars'] = $expand_calendars;
@@ -156,7 +197,10 @@ class schuweb_sitemap_dpcalendar
 
         $menuitemparams = null;
         if ($app instanceof Joomla\CMS\Application\ConsoleApplication) {
-            $db    = Factory::getDBO();
+            
+            /** @var DatabaseDriver $db */
+            $db = Factory::getContainer()->get(DatabaseInterface::class);
+            
             $query = $db->getQuery(true);
             $query->select($db->qn('params'))
                 ->from($db->qn('#__menu'))
@@ -164,7 +208,7 @@ class schuweb_sitemap_dpcalendar
             $db->setQuery($query);
             $menuparams = $db->loadResult();
             if (is_null($menuparams))
-                throw new RuntimeException("Menuprams of DPCalendar menu item not found in database");
+                throw new \RuntimeException("Menuprams of DPCalendar menu item not found in database");
             $menuitemparams = new Registry($menuparams);
         } else {
             $menuitem       = $app->getMenu('site')->getItem($itemid);
@@ -172,7 +216,7 @@ class schuweb_sitemap_dpcalendar
         }
 
         if (is_null($menuitemparams))
-            throw new RuntimeException("Menuprams of DPCalendar menu item not found");
+            throw new \RuntimeException("Menuprams of DPCalendar menu item not found");
 
         $calendar_ids = $menuitemparams->get('ids');
 
@@ -184,7 +228,7 @@ class schuweb_sitemap_dpcalendar
 
         if ($items && count($items) > 0) {
             foreach ($items as $item) {
-                $node = new stdclass();
+                $node = new \stdClass;
                 $node->id = $parent->id;
                 $id = $node->uid = $parent->uid . 'c' . $item->id;
                 $node->browserNav = $parent->browserNav;
@@ -231,7 +275,7 @@ class schuweb_sitemap_dpcalendar
     public static function includeCalendarContent(&$sitemap, &$parent, $caid, &$params, $Itemid)
     {
         BaseDatabaseModel::addIncludePath(JPATH_SITE . '/components/com_dpcalendar/models', 'DPCalendarModel');
-        if (!JLoader::import('components.com_dpcalendar.helpers.dpcalendar', JPATH_ADMINISTRATOR)) {
+        if (!\JLoader::import('components.com_dpcalendar.helpers.dpcalendar', JPATH_ADMINISTRATOR)) {
             return;
         }
 
@@ -243,7 +287,7 @@ class schuweb_sitemap_dpcalendar
         $items = $model_cal->getItems();
         if (count($items) > 0) {
             foreach ($items as $item) {
-                $node = new stdclass();
+                $node = new \stdClass;
                 $node->id = $parent->id;
                 $id = $node->uid = $parent->uid . 'a' . $item->id;
                 $node->browserNav = $parent->browserNav;

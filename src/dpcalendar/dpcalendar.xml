@@ -9,10 +9,12 @@
 	<authorUrl>extensions.schultschik.de</authorUrl>
 	<version>sw.build.version</version>
 	<description>PLG_SCHUWEB_SITEMAP_DPCALENDAR_XML_DESCRIPTION</description>
-	<files>
-		<filename plugin="dpcalendar">dpcalendar.php</filename>
-		<folder>language</folder>
-	</files>
+    <namespace path="src">SchuWeb\Plugin\SchuWeb_Sitemap\DPCalendar</namespace>
+    <files>
+        <folder plugin="dpcalendar">services</folder>
+        <folder>src</folder>
+    </files>
+    <scriptfile>script.php</scriptfile>
 	<languages folder="language">
 		<language tag="en-GB">en-GB/plg_schuweb_sitemap_dpcalendar.ini</language>
 		<language tag="en-GB">en-GB/plg_schuweb_sitemap_dpcalendar.sys.ini</language>
@@ -23,7 +25,6 @@
         </server>
     </updateservers>
     <changelogurl>https://raw.githubusercontent.com/svanschu/SchuWeb-Sitemap-DPCalendar/main/changelog.xml</changelogurl>
-	<scriptfile>script.php</scriptfile>
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
