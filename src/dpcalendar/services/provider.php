@@ -17,23 +17,22 @@ use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
 use SchuWeb\Plugin\SchuWeb_Sitemap\DPCalendar\Extension\DPCalendar;
 
-    return new class() implements ServiceProviderInterface
+return new class () implements ServiceProviderInterface {
+    public function register(Container $container)
     {
-        public function register(Container $container)
-        {
-            $container->set(
-                PluginInterface::class,
-                function (Container $container) {
-    
-                    $config = (array) PluginHelper::getPlugin('schuweb_sitemap', 'dpcalendar');
-                    $subject = $container->get(DispatcherInterface::class);
-                    $app = Factory::getApplication();
-                    
-                    $plugin = new DPCalendar($subject, $config);
-                    $plugin->setApplication($app);
-    
-                    return $plugin;
-                }
-            );
-        }
-    };
+        $container->set(
+            PluginInterface::class,
+            function (Container $container) {
+
+                $config  = (array) PluginHelper::getPlugin('schuweb_sitemap', 'dpcalendar');
+                $subject = $container->get(DispatcherInterface::class);
+                $app     = Factory::getApplication();
+
+                $plugin = new DPCalendar($subject, $config);
+                $plugin->setApplication($app);
+
+                return $plugin;
+            }
+        );
+    }
+};

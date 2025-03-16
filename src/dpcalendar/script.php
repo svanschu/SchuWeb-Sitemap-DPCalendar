@@ -30,7 +30,7 @@ class Plgschuweb_sitemapdpcalendarInstallerScript extends InstallerScript
     {
         // Define the minumum versions to be supported.
         $this->minimumJoomla = '4.0';
-        $this->minimumPhp = '8';
+        $this->minimumPhp    = '8';
     }
 
     /**
@@ -51,16 +51,17 @@ class Plgschuweb_sitemapdpcalendarInstallerScript extends InstallerScript
     public function postflight($type, $parent)
     {
         $app = Factory::getApplication();
-        
+
         /** @var DatabaseDriver $db */
-        $db    = Factory::getContainer()->get(DatabaseInterface::class);
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
 
         $query = $db->getQuery(true);
         $query->select(
             $db->quoteName('enabled') . ','
             . $db->quoteName('access') . ','
             . $db->quoteName('protected') . ','
-            . $db->quoteName('params'))
+            . $db->quoteName('params')
+        )
             ->from($db->quoteName('#__extensions'))
             ->where($db->quoteName('element') . '=' . $db->quote('com_dpcalendar'))
             ->where($db->quoteName('type') . '=' . $db->quote('plugin'))
@@ -78,7 +79,7 @@ class Plgschuweb_sitemapdpcalendarInstallerScript extends InstallerScript
                     $db->quoteName('protected') . '=' . $plugin['protected'],
                     $db->quoteName('params') . '=' . $db->quote($plugin['params'])
                 );
-                $query = $db->getQuery(true);
+                $query   = $db->getQuery(true);
                 $query->update($db->quoteName('#__extensions'))
                     ->set($columns)
                     ->where($db->quoteName('element') . '=' . $db->quote('dpcalendar'))

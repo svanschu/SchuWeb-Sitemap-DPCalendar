@@ -38,7 +38,7 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
         ];
     }
 
-        /**
+    /**
      * This function is called before a menu item is printed. We use it to set the
      * proper uniqueid for the item
      *
@@ -68,7 +68,7 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
             case 'event':
                 $menu_item->uid = "com_dpcalendar{$id}";
                 $menu_item->expandible = false;
-                
+
                 $component = Factory::getApplication()->bootComponent('dpcalendar');
                 /** @var EventModel $model */
                 $model = $component->getMVCFactory()->createModel('Event', 'Site');
@@ -84,7 +84,7 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
         }
     }
 
-        /**
+    /**
      * Expands a com_content menu item
      *
      * @param   TreePrepareEvent  Event object
@@ -108,8 +108,8 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
         /** @var DatabaseDriver $db */
         $db = Factory::getContainer()->get(DatabaseInterface::class);
 
-        $app = Factory::getApplication();
-        $user = $app->getIdentity();
+        $app    = Factory::getApplication();
+        $user   = $app->getIdentity();
         $result = null;
 
         if (is_null($user))
@@ -124,19 +124,19 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
 
         parse_str(html_entity_decode($link_query['query']), $link_vars);
         $view = ArrayHelper::getValue($link_vars, 'view', '');
-        $id = intval(ArrayHelper::getValue($link_vars, 'id', ''));
+        $id   = intval(ArrayHelper::getValue($link_vars, 'id', ''));
 
         /*
          * * Parameters Initialitation
          */
         // ----- Set expand_calendars param
-        $expand_calendars = $this->params->get('expand_calendars', 1);
-        $expand_calendars = ($expand_calendars == 1 || ($expand_calendars == 2 && $sitemap->isXmlsitemap()) ||
+        $expand_calendars           = $this->params->get('expand_calendars', 1);
+        $expand_calendars           = ($expand_calendars == 1 || ($expand_calendars == 2 && $sitemap->isXmlsitemap()) ||
             ($expand_calendars == 3 && !$sitemap->isXmlsitemap()));
         $params['expand_calendars'] = $expand_calendars;
 
-        $priority = $this->params->get( 'calendar_priority', $parent->priority);
-        $changefreq = $this->params->get( 'calendar_changefreq', $parent->changefreq);
+        $priority   = $this->params->get('calendar_priority', $parent->priority);
+        $changefreq = $this->params->get('calendar_changefreq', $parent->changefreq);
 
         if ($priority == '-1') {
             $priority = $parent->priority;
@@ -145,11 +145,11 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
             $changefreq = $parent->changefreq;
         }
 
-        $params['calendar_priority'] = $priority;
+        $params['calendar_priority']   = $priority;
         $params['calendar_changefreq'] = $changefreq;
 
-        $event_priority = $this->params->get( 'event_priority', $parent->priority);
-        $event_changefreq = $this->params->get( 'event_changefreq', $parent->changefreq);
+        $event_priority   = $this->params->get('event_priority', $parent->priority);
+        $event_changefreq = $this->params->get('event_changefreq', $parent->changefreq);
 
         if ($event_priority == '-1') {
             $event_priority = $parent->priority;
@@ -158,13 +158,13 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
             $event_changefreq = $parent->changefreq;
         }
 
-        $params['event_priority'] = $event_priority;
+        $params['event_priority']   = $event_priority;
         $params['event_changefreq'] = $event_changefreq;
 
         $params['nullDate'] = $db->quote($db->getNullDate());
 
         $params['nowDate'] = $db->quote(Factory::getDate()->toSql());
-        $params['groups'] = implode(',', $groups);
+        $params['groups']  = implode(',', $groups);
 
         // Define the language filter condition for the query
         $params['language_filter'] = $sitemap->isLanguageFilter();
@@ -188,13 +188,15 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
      * @param   int         $catid   the id of the category to be expanded
      * @param   mixed[]     $params  an assoc array with the params for this plugin on Xmap
      * @param   int         $itemid  the itemid to use for this category's children
+     * 
+     * @return bool
      */
-    public static function expandCalendar(&$sitemap, &$parent, $caid, &$params, $itemid)
+    public static function expandCalendar(&$sitemap, &$parent, $caid, &$params, $itemid): bool
     {
-        $options = [];
+        $options               = [];
         $options['countItems'] = 20;
-        $app = Factory::getApplication();
-        $component = $app->bootComponent('DPCalendar');
+        $app                   = Factory::getApplication();
+        $component             = $app->bootComponent('DPCalendar');
         if ($component instanceof CategoryServiceInterface) {
             $categories = $component->getCategory($options);
         }
@@ -209,10 +211,10 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
 
         $menuitemparams = null;
         if ($app instanceof Joomla\CMS\Application\ConsoleApplication) {
-            
+
             /** @var DatabaseDriver $db */
             $db = Factory::getContainer()->get(DatabaseInterface::class);
-            
+
             $query = $db->getQuery(true);
             $query->select($db->qn('params'))
                 ->from($db->qn('#__menu'))
@@ -240,26 +242,27 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
 
         if ($items && count($items) > 0) {
             foreach ($items as $item) {
-                $node = new \stdClass;
-                $node->id = $parent->id;
-                $id = $node->uid = $parent->uid . 'c' . $item->id;
+                $node             = new \stdClass;
+                $node->id         = $parent->id;
+                $id               = $node->uid = $parent->uid . 'c' . $item->id;
                 $node->browserNav = $parent->browserNav;
-                $node->priority = $params['calendar_priority'];
+                $node->priority   = $params['calendar_priority'];
                 $node->changefreq = $params['calendar_changefreq'];
 
-                $node->name = $item->title;
+                $node->name       = $item->title;
                 $node->expandible = true;
-                $node->secure = $parent->secure;
-                $node->newsItem = 0;
+                $node->secure     = $parent->secure;
+                $node->newsItem   = 0;
 
                 $item->modified = $item->modified_time;
 
                 if ($sitemap->isNewssitemap()) {
                     $item->modified = $item->created_time;
-                } 
-                
+                }
+
                 $node->slug = $item->id;
-                $node->link = Route::link('site',
+                $node->link = Route::link(
+                    'site',
                     'index.php?option=com_dpcalendar&view=calendar&Itemid=' . $node->id,
                     true,
                     Route::TLS_IGNORE,
@@ -294,30 +297,31 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
 
         $model->setState('category.id', $caid);
         $items = $model->getItems();
-        
+
         if (count($items) > 0) {
             foreach ($items as $item) {
-                $node = new \stdClass;
-                $node->id = $parent->id;
-                $id = $node->uid = $parent->uid . 'a' . $item->id;
+                $node             = new \stdClass;
+                $node->id         = $parent->id;
+                $id               = $node->uid = $parent->uid . 'a' . $item->id;
                 $node->browserNav = $parent->browserNav;
-                $node->priority = $params['event_priority'];
+                $node->priority   = $params['event_priority'];
                 $node->changefreq = $params['event_changefreq'];
 
-                $node->name = $item->title;
-                $node->modified = $item->modified;
+                $node->name       = $item->title;
+                $node->modified   = $item->modified;
                 $node->expandible = false;
-                $node->secure = $parent->secure;
-                $node->newsItem = 1;
-                $node->language = $item->language;
+                $node->secure     = $parent->secure;
+                $node->newsItem   = 1;
+                $node->language   = $item->language;
 
                 if ($sitemap->isNewssitemap()) {
                     $node->modified = $item->created;
                 }
 
-                $node->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
+                $node->slug    = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
                 $node->catslug = $item->catid;
-                $node->link = Route::link('site',
+                $node->link    = Route::link(
+                    'site',
                     'index.php?option=com_dpcalendar&view=event&id=' . $item->id . '&Itemid=' . $node->id,
                     true,
                     Route::TLS_IGNORE,
@@ -342,10 +346,10 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
         $i = 0;
         foreach ($subnodes as $subnode) {
             $i++;
-            $subnode->id = $parent->id;
-            $id = $subnode->uid = $parent->uid . 'p' . $i;
+            $subnode->id         = $parent->id;
+            $id                  = $subnode->uid = $parent->uid . 'p' . $i;
             $subnode->browserNav = $parent->browserNav;
-            $subnode->priority = $params['event_priority'];
+            $subnode->priority   = $params['event_priority'];
             $subnode->changefreq = $params['event_changefreq'];
 
             $subnode->secure = $parent->secure;
