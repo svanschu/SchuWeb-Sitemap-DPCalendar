@@ -135,9 +135,9 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
             ($expand_calendars == 3 && !$sitemap->isXmlsitemap()));
         $params['expand_calendars'] = $expand_calendars;
 
-        // ----- Set calendar_priority and calendar_changefreq params
-        $priority = ArrayHelper::getValue($params, 'calendar_priority', $parent->priority);
-        $changefreq = ArrayHelper::getValue($params, 'calendar_changefreq', $parent->changefreq);
+        $priority = $this->params->get( 'calendar_priority', $parent->priority);
+        $changefreq = $this->params->get( 'calendar_changefreq', $parent->changefreq);
+
         if ($priority == '-1') {
             $priority = $parent->priority;
         }
@@ -147,6 +147,19 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
 
         $params['calendar_priority'] = $priority;
         $params['calendar_changefreq'] = $changefreq;
+
+        $event_priority = $this->params->get( 'event_priority', $parent->priority);
+        $event_changefreq = $this->params->get( 'event_changefreq', $parent->changefreq);
+
+        if ($event_priority == '-1') {
+            $event_priority = $parent->priority;
+        }
+        if ($event_changefreq == '-1') {
+            $event_changefreq = $parent->changefreq;
+        }
+
+        $params['event_priority'] = $event_priority;
+        $params['event_changefreq'] = $event_changefreq;
 
         $params['nullDate'] = $db->quote($db->getNullDate());
 
