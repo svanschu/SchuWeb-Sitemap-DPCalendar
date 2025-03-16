@@ -5,6 +5,46 @@
         <description>Plugin to support extension DPCalendar in SchuWeb Sitemap - Sitemap Generator for Joomla!</description>
         <element>schuweb_sitemap_dpcalendar</element>
         <type>plugin</type>
+        <version>5.2.1</version>
+        <changelogurl>https://raw.githubusercontent.com/svanschu/SchuWeb-Sitemap-DPCalendar/main/changelog.xml</changelogurl>
+        <infourl title="SchuWeb Sitemap - DPCalendar Plugin 5.2.1">https://extensions.schultschik.com/products/schuweb-sitemap/schuweb-sitemap-5-2-1</infourl>
+        <downloads>
+            <downloadurl type="full" format="zip">https://github.com/svanschu/SchuWeb-Sitemap-DPCalendar/releases/download/5.2.1/plg_dpcalendar_5.2.1_20250316.zip</downloadurl>
+        </downloads>
+        <sha512>1f2908c9cc450e035ac8688f053fa348ccf1872d02f67992a75c7c14d88668d81b9e5954a5453b106d5f8914c4befc8c672807dbae7c583995995616a0242dd2</sha512>
+        <tags>
+            <tag>stable</tag>
+        </tags>
+        <maintainer>Sven Schultschik</maintainer>
+        <maintainerurl>https://extensions.schultschik.de</maintainerurl>
+        <targetplatform name="joomla" version="5"/>
+        <php_minimum>8.0.0</php_minimum>
+    </update>
+    <update>
+        <name>SchuWeb Sitemap - DPCalendar Plugin</name>
+        <description>Plugin to support extension DPCalendar in SchuWeb Sitemap - Sitemap Generator for Joomla!</description>
+        <element>schuweb_sitemap_dpcalendar</element>
+        <type>plugin</type>
+        <version>5.2.1</version>
+        <changelogurl>https://raw.githubusercontent.com/svanschu/SchuWeb-Sitemap-DPCalendar/main/changelog.xml</changelogurl>
+        <infourl title="SchuWeb Sitemap - DPCalendar Plugin 5.2.1">https://extensions.schultschik.com/products/schuweb-sitemap/schuweb-sitemap-5-2-1</infourl>
+        <downloads>
+            <downloadurl type="full" format="zip">https://github.com/svanschu/SchuWeb-Sitemap-DPCalendar/releases/download/5.2.1/plg_dpcalendar_5.2.1_20250316.zip</downloadurl>
+        </downloads>
+        <sha512>1f2908c9cc450e035ac8688f053fa348ccf1872d02f67992a75c7c14d88668d81b9e5954a5453b106d5f8914c4befc8c672807dbae7c583995995616a0242dd2</sha512>
+        <tags>
+            <tag>stable</tag>
+        </tags>
+        <maintainer>Sven Schultschik</maintainer>
+        <maintainerurl>https://extensions.schultschik.de</maintainerurl>
+        <targetplatform name="joomla" version="4"/>
+        <php_minimum>8.0.0</php_minimum>
+    </update>
+    <update>
+        <name>SchuWeb Sitemap - DPCalendar Plugin</name>
+        <description>Plugin to support extension DPCalendar in SchuWeb Sitemap - Sitemap Generator for Joomla!</description>
+        <element>schuweb_sitemap_dpcalendar</element>
+        <type>plugin</type>
         <version>5.2.0</version>
         <changelogurl>https://raw.githubusercontent.com/svanschu/SchuWeb-Sitemap-DPCalendar/main/changelog.xml</changelogurl>
         <infourl title="SchuWeb Sitemap - DPCalendar Plugin 5.2.0">https://extensions.schultschik.com/products/schuweb-sitemap/schuweb-sitemap-5-2-0</infourl>

@@ -2,6 +2,27 @@
     <changelog>
         <element>schuweb_sitemap_dpcalendar</element>
         <type>component</type>
+        <version>5.2.1</version>
+        <fix>
+            <item>fix en-GE use SchuWeb Sitemap as name</item>
+            <item>fix deprecated getDbo()</item>
+            <item>fix Events and Event model call</item>
+            <item>fix cal and event priority and changefreq</item>
+            <item>fix wrong SitemapModel type</item>
+        </fix>
+        <addition>
+        </addition>
+        <change>
+            <item>PSR-12 formatting</item>
+        </change>
+        <remove>
+        </remove>
+        <note>
+        </note>
+    </changelog>
+    <changelog>
+        <element>schuweb_sitemap_dpcalendar</element>
+        <type>component</type>
         <version>5.2.0</version>
         <fix>
         </fix>
