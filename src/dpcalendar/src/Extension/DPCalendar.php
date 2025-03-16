@@ -183,7 +183,7 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
     /**
      * Get all content items within a calendar.
      *
-     * @param   SchuWeb\Component\Sitemap\Administrator\Model\SitemapModel  $sitemap
+     * @param   \SchuWeb\Component\Sitemap\Site\Model\SitemapModel  $sitemap
      * @param   \stdClass   $parent  the menu item
      * @param   int         $catid   the id of the category to be expanded
      * @param   mixed[]     $params  an assoc array with the params for this plugin on Xmap
