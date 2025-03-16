@@ -13,7 +13,6 @@ namespace SchuWeb\Plugin\SchuWeb_Sitemap\DPCalendar\Extension;
 
 use Joomla\CMS\Categories\CategoryServiceInterface;
 use Joomla\CMS\Factory;
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Router\Route;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\Registry\Registry;
@@ -23,6 +22,8 @@ use Joomla\Database\DatabaseDriver;
 use Joomla\Database\DatabaseInterface;
 use SchuWeb\Component\Sitemap\Site\Event\MenuItemPrepareEvent;
 use SchuWeb\Component\Sitemap\Site\Event\TreePrepareEvent;
+use DigitalPeak\Component\DPCalendar\Site\Model\EventsModel;
+use DigitalPeak\Component\DPCalendar\Site\Model\EventModel;
 
 class DPCalendar extends CMSPlugin implements SubscriberInterface
 {
@@ -58,7 +59,6 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
         parse_str(html_entity_decode($link_query['query']), $link_vars);
         $view = ArrayHelper::getValue($link_vars, 'view', '');
         $id   = ArrayHelper::getValue($link_vars, 'id', 0);
-        BaseDatabaseModel::addIncludePath(JPATH_SITE . '/components/com_dpcalendar/models', 'DPCalendarModel');
 
         switch ($view) {
             case 'calendar':
@@ -66,16 +66,15 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
                 $menu_item->expandible = true;
                 break;
             case 'event':
-                if (!\JLoader::import('components.com_dpcalendar.helpers.dpcalendar', JPATH_ADMINISTRATOR)) {
-                    return;
-                }
                 $menu_item->uid = "com_dpcalendar{$id}";
                 $menu_item->expandible = false;
-                $model_cal = Factory::getApplication()->bootComponent('com_dpcalendar')
-                    ->getMVCFactory()->createModel('Event', 'DPCalendarModel');
+                
+                $component = Factory::getApplication()->bootComponent('dpcalendar');
+                /** @var EventModel $model */
+                $model = $component->getMVCFactory()->createModel('Event', 'Site');
 
                 $eid = intval($id);
-                $row = $model_cal->getItem($eid);
+                $row = $model->getItem($eid);
                 if ($row != null) {
                     $menu_item->modified = $row->modified;
                 }
@@ -274,17 +273,15 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
 
     public static function includeCalendarContent(&$sitemap, &$parent, $caid, &$params, $Itemid)
     {
-        BaseDatabaseModel::addIncludePath(JPATH_SITE . '/components/com_dpcalendar/models', 'DPCalendarModel');
-        if (!\JLoader::import('components.com_dpcalendar.helpers.dpcalendar', JPATH_ADMINISTRATOR)) {
-            return;
-        }
-
         $app = Factory::getApplication();
-        $model_cal = $app->bootComponent('com_dpcalendar')
-            ->getMVCFactory()->createModel('Events', 'DPCalendarModel');
 
-        $app->input->set('ids', $caid);
-        $items = $model_cal->getItems();
+        $component = $app->bootComponent('dpcalendar');
+        /** @var EventsModel $model */
+        $model = $component->getMVCFactory()->createModel('Events', 'Site', ['ignore_request' => true]);
+
+        $model->setState('category.id', $caid);
+        $items = $model->getItems();
+        
         if (count($items) > 0) {
             foreach ($items as $item) {
                 $node = new \stdClass;
