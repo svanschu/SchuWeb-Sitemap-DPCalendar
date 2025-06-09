@@ -260,10 +260,15 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
                     $item->modified = $item->created_time;
                 }
 
+                $lang = "";
+                if ($item->language && $item->language !== '*' && \Joomla\CMS\Language\Multilanguage::isEnabled()) {
+                    $lang = "&lang={$item->language}";
+                }
+
                 $node->slug = $item->id;
                 $node->link = Route::link(
                     'site',
-                    'index.php?option=com_dpcalendar&view=calendar&Itemid=' . $node->id,
+                    "index.php?option=com_dpcalendar&view=calendar&Itemid={$node->id}{$lang}",
                     true,
                     Route::TLS_IGNORE,
                     $sitemap->isXmlsitemap()
@@ -318,11 +323,16 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
                     $node->modified = $item->created;
                 }
 
+                $lang = "";
+                if ($node->language && $node->language !== '*' && \Joomla\CMS\Language\Multilanguage::isEnabled()) {
+                    $lang = "&lang={$node->language}";
+                }
+
                 $node->slug    = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
                 $node->catslug = $item->catid;
                 $node->link    = Route::link(
                     'site',
-                    'index.php?option=com_dpcalendar&view=event&id=' . $item->id . '&Itemid=' . $node->id,
+                    "index.php?option=com_dpcalendar&view=event&id={$item->id}&Itemid={$node->id}{$lang}",
                     true,
                     Route::TLS_IGNORE,
                     $sitemap->isXmlsitemap()
