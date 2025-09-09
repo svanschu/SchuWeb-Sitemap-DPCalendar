@@ -2,6 +2,22 @@
     <changelog>
         <element>schuweb_sitemap_dpcalendar</element>
         <type>component</type>
+        <version>5.2.2</version>
+        <fix>
+        </fix>
+        <addition>
+            <item>add multi language support</item>
+        </addition>
+        <change>
+        </change>
+        <remove>
+        </remove>
+        <note>
+        </note>
+    </changelog>
+    <changelog>
+        <element>schuweb_sitemap_dpcalendar</element>
+        <type>component</type>
         <version>5.2.1</version>
         <fix>
             <item>fix en-GE use SchuWeb Sitemap as name</item>
