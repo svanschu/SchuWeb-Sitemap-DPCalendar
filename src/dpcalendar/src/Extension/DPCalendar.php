@@ -112,10 +112,13 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
         $user   = $app->getIdentity();
         $result = null;
 
-        if (is_null($user))
-            $groups = [0 => 1];
-        else
+        if ($sitemap->isXmlsitemap() || is_null($user)) {
+            // The XML sitemap is public: only public view levels, independent of the user
+            // who creates the file (e.g. an admin in the backend)
+            $groups = [1, 5];
+        } else {
             $groups = $user->getAuthorisedViewLevels();
+        }
 
         $link_query = parse_url($parent->link);
         if (!isset($link_query['query'])) {
@@ -164,7 +167,7 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
         $params['nullDate'] = $db->quote($db->getNullDate());
 
         $params['nowDate'] = $db->quote(Factory::getDate()->toSql());
-        $params['groups']  = implode(',', $groups);
+        $params['groups']  = array_map('intval', $groups);
 
         // Define the language filter condition for the query
         $params['language_filter'] = $sitemap->isLanguageFilter();
@@ -195,6 +198,8 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
     {
         $options               = [];
         $options['countItems'] = 20;
+        // Access is checked below with the view levels of the sitemap, not of the current user
+        $options['access']     = false;
         $app                   = Factory::getApplication();
         $component             = $app->bootComponent('DPCalendar');
         if ($component instanceof CategoryServiceInterface) {
@@ -234,11 +239,16 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
 
         $calendar_ids = $menuitemparams->get('ids');
 
-        if (!in_array("-1", $calendar_ids))
+        if ($items) {
             foreach ($items as $k => $item) {
-                if (!in_array($item->id, $calendar_ids))
+                if (
+                    (is_array($calendar_ids) && !in_array("-1", $calendar_ids) && !in_array($item->id, $calendar_ids))
+                    || !in_array((int) $item->access, $params['groups'])
+                ) {
                     unset($items[$k]);
+                }
             }
+        }
 
         if ($items && count($items) > 0) {
             foreach ($items as $item) {
@@ -306,10 +316,18 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
         }
 
         $model->setState('category.id', $caid);
+        // Like for visitors who can't edit events: only published events within their publish dates
+        $model->setState('filter.state', [1, 3]);
+        $model->setState('filter.publish_date', true);
         $items = $model->getItems();
 
         if ($items && count($items) > 0) {
             foreach ($items as $item) {
+                // The model filters by the access of the current user, check the sitemap's view levels
+                if (!in_array((int) $item->access, $params['groups'])) {
+                    continue;
+                }
+
                 $node             = new \stdClass;
                 $node->id         = $parent->id;
                 $id               = $node->uid = $parent->uid . 'a' . $item->id;
