@@ -74,8 +74,8 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
                 $model = $component->getMVCFactory()->createModel('Event', 'Site');
 
                 $eid = intval($id);
-                $row = $model->getItem($eid);
-                if ($row != null) {
+                $row = $model ? $model->getItem($eid) : null;
+                if ($row) {
                     $menu_item->modified = $row->modified;
                 }
                 break;
@@ -210,7 +210,7 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
         }
 
         $menuitemparams = null;
-        if ($app instanceof Joomla\CMS\Application\ConsoleApplication) {
+        if ($app instanceof \Joomla\CMS\Application\ConsoleApplication) {
 
             /** @var DatabaseDriver $db */
             $db = Factory::getContainer()->get(DatabaseInterface::class);
@@ -300,10 +300,15 @@ class DPCalendar extends CMSPlugin implements SubscriberInterface
         /** @var EventsModel $model */
         $model = $component->getMVCFactory()->createModel('Events', 'Site', ['ignore_request' => true]);
 
+        // DPCalendar 8 (Joomla 4) has no namespaced models
+        if (!$model) {
+            return true;
+        }
+
         $model->setState('category.id', $caid);
         $items = $model->getItems();
 
-        if (count($items) > 0) {
+        if ($items && count($items) > 0) {
             foreach ($items as $item) {
                 $node             = new \stdClass;
                 $node->id         = $parent->id;
